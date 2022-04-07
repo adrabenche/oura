@@ -1,0 +1,38 @@
+# By default, the docker-compose command will look for a file named .env
+version: '3'
+
+services:
+  cardano-node:
+    container_name: txpipe_cardano-node
+    image: inputoutput/cardano-node:${CARDANO_NODE_VERSION:-1.27.0}
+    environment:
+      - NETWORK=${NETWORK:-mainnet}
+    volumes:
+      - node-db:/data/db
+      - node-ipc:/ipc
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+    networks:
+      - txpipe
+
+  oura:
+    container_name: txpipe_oura
+    build:
+      context: ./oura
+      args:
+        - ARG_GITREV=
+    networks:
+      - txpipe
+    command: dump relays-new.cardano-mainnet.iohk.io:3001 --bearer tcp --magic mainnet
+
+volumes:
+  node-db:
+  node-ipc:
+
+networks:
+  txpipe:
+    driver: bridge
+
