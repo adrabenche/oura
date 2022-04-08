@@ -26,7 +26,7 @@ services:
         - ARG_GITREV=
     networks:
       - txpipe
-    command: dump relays-new.cardano-mainnet.iohk.io:3001 --bearer tcp --magic mainnet
+    command: dump relays-new.cardano-mainnet.iohk.io:3001 --bearer tcp --magic ${NETWORK:-mainnet}
 
 volumes:
   node-db:
